@@ -1,0 +1,11 @@
+from golang:1.21 as builder
+WORKDIR /app
+COPY go.mod ./
+RUN go mod download
+COPY *.go ./
+RUN go build -o /docker-gs-ping ./main.go
+
+from alpine
+WORKDIR /app
+COPY --from=builder ./docker-gs-ping ./docker-gs-ping
+ENTRYPOINT ["./docker-gs-ping"]
